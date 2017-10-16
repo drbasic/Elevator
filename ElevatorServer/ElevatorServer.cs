@@ -44,7 +44,13 @@ namespace Elevator
             // Need to specifically set the security to allow "Everyone" since this app runs as an admin
             // while the client runs as the default user
             PipeSecurity pSecure = new PipeSecurity();
-            pSecure.SetAccessRule(new PipeAccessRule("Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
+            try
+            {
+                pSecure.SetAccessRule(new PipeAccessRule("Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
+            } catch(System.Security.Principal.IdentityNotMappedException)
+            {
+                pSecure.SetAccessRule(new PipeAccessRule("Все", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
+            }
 
             _pipeServer = new NamedPipeServerStream("TracingControllerPipe", PipeDirection.InOut, 10, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 255, 255, pSecure);
             _inputPipeStream = new StreamReader(_pipeServer);
