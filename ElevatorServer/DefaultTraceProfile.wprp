@@ -11,6 +11,11 @@
       <BufferSize Value="1024"/>
       <Buffers Value="128"/>
     </SystemCollector>
+
+    <SystemCollector Id="SystemCollector_GpuUsageMetrics" Name="NT Kernel Logger">
+      <BufferSize Value="1024"/>
+      <Buffers Value="128"/>
+    </SystemCollector>
     
     <SystemCollector Id="SystemCollector_DiskUsageMetrics" Name="NT Kernel Logger">
       <BufferSize Value="1024"/>
@@ -43,6 +48,11 @@
       <Buffers Value="128"/>
     </EventCollector>
 
+    <EventCollector Id="EventCollector_GpuUsageMetrics" Name="GPU Usage Event Collector">
+      <BufferSize Value="1024"/>
+      <Buffers Value="128"/>
+    </EventCollector>
+    
     <EventCollector Id="EventCollector_DiskUsageMetrics" Name="Disk Usage Event Collector">
       <BufferSize Value="1024"/>
       <Buffers Value="800"/>
@@ -86,6 +96,15 @@
       </Keywords>
     </SystemProvider>
     <SystemProvider Id="SystemProvider_CpuUsageMetrics">
+      <Keywords>
+        <Keyword Value="CpuConfig"/>
+        <Keyword Value="CSwitch"/>
+        <Keyword Value="Loader"/>
+        <Keyword Value="ProcessThread"/>
+        <Keyword Value="SampledProfile"/>
+      </Keywords>
+    </SystemProvider>
+    <SystemProvider Id="SystemProvider_GpuUsageMetrics">
       <Keywords>
         <Keyword Value="CpuConfig"/>
         <Keyword Value="CSwitch"/>
@@ -268,6 +287,26 @@
         </EventCollectorId>
       </Collectors>
 	</Profile>
+
+    <Profile Id="gpuUsage.Verbose.File" Name="gpuUsage" Description="GPU Usage Profile" DetailLevel="Verbose" LoggingMode="File">
+      <Collectors>
+        <SystemCollectorId Value="SystemCollector_GpuUsageMetrics">
+          <SystemProviderId Value="SystemProvider_GpuUsageMetrics" />
+        </SystemCollectorId>
+        <EventCollectorId Value="EventCollector_GpuUsageMetrics">
+          <EventProviders>
+            <EventProviderId Value="EventProvider_Microsoft-Windows-Kernel-EventTracing" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-DXGKrnl" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-Win32k"/>
+            <EventProviderId Value="EventProvider_Microsoft-Windows-ProcessStateManager" />
+            <EventProviderId Value="EventProvider_PerfTrack" />
+            <EventProviderId Value="EventProvider_BrowserEfficiencyTestEventProvider" />
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <Profile Id="gpuUsage.Verbose.Memory" Name="gpuUsage" Description="GPU Usage Profile" Base="gpuUsage.Verbose.File" LoggingMode="Memory" DetailLevel="Verbose" />
+
     <Profile Id="energy.Verbose.File" Name="energy" Description="Energy Profile" LoggingMode="File" DetailLevel="Verbose">
       <Collectors>
         <EventCollectorId Value="EventCollector_EnergyMetrics">
